@@ -12,7 +12,7 @@ $ flask db upgrade
 ```
 
 
-###How to run
+### How to run
 
 ```shell script
 $ flask run -p 8000
