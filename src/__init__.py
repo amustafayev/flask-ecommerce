@@ -12,6 +12,7 @@ login_manager = LoginManager(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecommerce.db'
 app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
+app.config['ADMIN_USERNAME'] = 'admin'
 
 db = SQLAlchemy(app)
 
@@ -22,5 +23,4 @@ app.app_context().push()
 bcrypt = Bcrypt(app)
 
 from src import admin
-
 from src import routers

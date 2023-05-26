@@ -29,7 +29,11 @@ class LoginForm(FlaskForm):
     password = PasswordField(label='Password:', validators=[Length(min=6), DataRequired()])
     submit = SubmitField(label='Login')
 
-class ItemCreationForm(FlaskForm):
-    name = StringField(label='Name:', validators=[Length(min=2, max=30), DataRequired()])
-    price = IntegerField(label='Price:', validators=[DataRequired()])
-    description = StringField(label='Description:', validators=[Length(min=2, max=1024), DataRequired()])
+class ContactForm(FlaskForm):
+    name = StringField(label='User Name:', validators=[Length(min=2, max=30), DataRequired()])
+    email_address = StringField(label='Email Address:', validators=[Email(), DataRequired()])
+    subject = StringField(label='Subject:', validators=[Length(min=2, max=50), DataRequired()])
+    message = StringField(label='Message:', validators=[Length(min=20, max=255), DataRequired()])
+    submit = SubmitField(label='Send Request')
+
+

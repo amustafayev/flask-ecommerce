@@ -7,6 +7,7 @@ from src import login_manager, db, bcrypt
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(length=30), nullable=False, unique=True)
@@ -54,6 +55,7 @@ class Item(db.Model):
     def __repr__(self):
         return f'Item: {self.name}'
 
+
 class Category(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(length=30), nullable=False, unique=True)
@@ -65,3 +67,11 @@ class Category(db.Model):
     @property
     def item_count(self):
         return len(self.items)
+
+
+class ContactDetails(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=30), nullable=False, unique=True)
+    email_address = db.Column(db.String(length=50), nullable=False, unique=True)
+    subject = db.Column(db.String(length=50), nullable=False)
+    message = db.Column(db.String(length=255), nullable=False)

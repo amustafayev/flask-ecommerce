@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 
 from src import app, db
-from src.forms import RegisterForm, LoginForm
-from src.models import User, Item, Category
+from src.forms import RegisterForm, LoginForm, ContactForm
+from src.models import User, Item, Category, ContactDetails
 
 
 @app.route("/<int:category_id>")
@@ -36,6 +36,25 @@ def register():
             flash(f'There was an error with creating a user: {err_msg}', category='danger')
     print("Register endpoint end")
     return render_template('register.html', form=form)
+
+
+@app.route("/contact", methods=['GET', 'POST'])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        contact_detail = ContactDetails(name=form.name.data,
+                                        email_address=form.email_address.data,
+                                        subject=form.subject.data,
+                                        message=form.message.data,
+                                        )
+        db.session.add(contact_detail)
+        db.session.commit()
+        flash("Contact Information Successfully sent", category="success")
+        return redirect(url_for('home_page'))
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'There was an error with sending contact information: {err_msg}', category='danger')
+    return render_template("contact.html", form=form)
 
 
 @app.route("/logout", methods=['GET'])
@@ -103,7 +122,7 @@ def item_detail(item_id):
     return render_template("detail.html", product=item,
                            suggestions=filter(lambda suggestion: suggestion.id != item.id,
                                               Category.query.get_or_404(item.category_id).items
-                                        )
+                                              )
                            )
 
 
