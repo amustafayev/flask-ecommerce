@@ -5,6 +5,7 @@ from src import app, db
 from src.forms import RegisterForm, LoginForm
 from src.models import User, Item, Category
 
+
 @app.route("/<int:category_id>")
 @app.route("/")
 def home_page(category_id=None):
@@ -99,7 +100,11 @@ def favorite_list():
 @app.route("/items/<int:item_id>")
 def item_detail(item_id):
     item = Item.query.get_or_404(item_id)
-    return render_template("detail.html", product=item)
+    return render_template("detail.html", product=item,
+                           suggestions=filter(lambda suggestion: suggestion.id != item.id,
+                                              Category.query.get_or_404(item.category_id).items
+                                        )
+                           )
 
 
 @app.errorhandler(401)
