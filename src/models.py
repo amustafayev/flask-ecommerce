@@ -7,7 +7,6 @@ from src import login_manager, db, bcrypt
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer(), primary_key=True)
     username = db.Column(db.String(length=30), nullable=False, unique=True)
@@ -34,7 +33,11 @@ class User(db.Model, UserMixin):
     def check_password_correction(self, attempted_password):
         return bcrypt.check_password_hash(self.password_hash, attempted_password)
 
-    def __str__(self):
+    @property
+    def favorite_count(self):
+        return len(self.favorites)
+
+    def __repr__(self):
         return f'{self.username}'
 
 
@@ -46,6 +49,19 @@ class Item(db.Model):
     description = db.Column(db.String(length=1024), nullable=False)
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     image_path = db.Column(db.String(length=255), nullable=False)
+    category_id = db.Column(db.Integer(), db.ForeignKey('category.id'), nullable=False)
 
     def __repr__(self):
         return f'Item: {self.name}'
+
+class Category(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(length=30), nullable=False, unique=True)
+    items = db.relationship('Item', backref='category', lazy=True)
+
+    def __repr__(self):
+        return self.name
+
+    @property
+    def item_count(self):
+        return len(self.items)
