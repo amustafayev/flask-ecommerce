@@ -36,4 +36,6 @@ class ContactForm(FlaskForm):
     message = StringField(label='Message:', validators=[Length(min=20, max=255), DataRequired()])
     submit = SubmitField(label='Send Request')
 
-
+class CommentForm(FlaskForm):
+    comment = StringField(label='Comment:', validators=[Length(min=4, max=255), DataRequired()])
+    submit = SubmitField(label='Comment')

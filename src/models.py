@@ -1,6 +1,7 @@
 from flask_login import UserMixin
 
 from src import login_manager, db, bcrypt
+from sqlalchemy.sql import func
 
 
 @login_manager.user_loader
@@ -15,6 +16,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(length=60), nullable=False)
     budget = db.Column(db.Integer(), nullable=False, default=1000)
     favorites = db.relationship('Item', backref='user', lazy=True)
+    comments = db.relationship('Comment', backref='user', lazy=True)
 
     @property
     def prettier_budget(self):
@@ -51,6 +53,7 @@ class Item(db.Model):
     user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
     image_path = db.Column(db.String(length=255), nullable=False)
     category_id = db.Column(db.Integer(), db.ForeignKey('category.id'), nullable=False)
+    comments = db.relationship('Comment', backref='item', lazy=True)
 
     def __repr__(self):
         return f'Item: {self.name}'
@@ -75,3 +78,15 @@ class ContactDetails(db.Model):
     email_address = db.Column(db.String(length=50), nullable=False, unique=True)
     subject = db.Column(db.String(length=50), nullable=False)
     message = db.Column(db.String(length=255), nullable=False)
+
+
+class Comment(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    comment = db.Column(db.String(length=255), nullable=False)
+    item_id = db.Column(db.Integer(), db.ForeignKey('item.id'), nullable=False)
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'), nullable=False)
+    create_date = db.Column(db.DateTime(timezone=True), default=func.now(), nullable=False)
+
+    @property
+    def date(self):
+        return self.create_date

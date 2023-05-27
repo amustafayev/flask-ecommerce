@@ -1,7 +1,7 @@
 from flask_admin.contrib.sqla import ModelView
 from flask_admin import Admin
 from src import app, db
-from src.models import User, Item, Category, ContactDetails
+from src.models import User, Item, Category, ContactDetails, Comment
 from flask_login import current_user
 from flask import render_template, redirect, url_for, flash, request
 
@@ -59,3 +59,4 @@ admin.add_view(UserModelView(User, db.session))
 admin.add_view(ItemAdmin(Item, db.session))
 admin.add_view(CategoryAdmin(Category, db.session))
 admin.add_view(CustomModelView(ContactDetails, db.session))
+admin.add_view(CustomModelView(Comment, db.session))

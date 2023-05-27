@@ -2,8 +2,8 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, current_user, login_required
 
 from src import app, db
-from src.forms import RegisterForm, LoginForm, ContactForm
-from src.models import User, Item, Category, ContactDetails
+from src.forms import RegisterForm, LoginForm, ContactForm, CommentForm
+from src.models import User, Item, Category, ContactDetails, Comment
 
 
 @app.route("/<int:category_id>")
@@ -116,15 +116,30 @@ def favorite_list():
     return render_template("favorites.html", products=user.favorites)
 
 
-@app.route("/items/<int:item_id>")
+@app.route("/items/<int:item_id>", methods=['GET', 'POST'])
 def item_detail(item_id):
-    item = Item.query.get_or_404(item_id)
-    return render_template("detail.html", product=item,
-                           suggestions=filter(lambda suggestion: suggestion.id != item.id,
-                                              Category.query.get_or_404(item.category_id).items
-                                              )
-                           )
+    form = CommentForm()
+    if form.validate_on_submit():
+        Item.query.get_or_404(item_id)
+        comment_to_create = Comment(comment=form.comment.data,
+                                    item_id=item_id,
+                                    user_id=current_user.id)
+        db.session.add(comment_to_create)
+        db.session.commit()
+        flash("Comment Added Successfully", category="success")
 
+    if form.errors != {}:
+        for err_msg in form.errors.values():
+            flash(f'There was an error with sending contact information: {err_msg}', category='danger')
+
+    item = Item.query.get_or_404(item_id)
+    return render_template("detail.html",
+                           product=item,
+                           suggestions=filter(lambda suggestion: suggestion.id != item.id,
+                                              Category.query.get_or_404(item.category_id).items),
+                           comment_form=form,
+                           comments=sorted(item.comments, key=lambda x: x.create_date, reverse=True)
+                           )
 
 @app.errorhandler(401)
 def custom_401(error):
