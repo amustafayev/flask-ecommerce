@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, abort
 from flask_login import login_user, logout_user, current_user, login_required
 
 from src import app, db
@@ -13,8 +13,7 @@ def home_page(category_id=None):
         items = Category.query.get_or_404(category_id).items
     else:
         items = Item.query.all()
-    categories = Category.query.all()
-    return render_template("home.html", products=items, categories=categories)
+    return render_template("home.html", products=items, categories=Category.query.all())
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -35,7 +34,7 @@ def register():
         for err_msg in form.errors.values():
             flash(f'There was an error with creating a user: {err_msg}', category='danger')
     print("Register endpoint end")
-    return render_template('register.html', form=form)
+    return render_template('register.html', form=form, categories=Category.query.all())
 
 
 @app.route("/contact", methods=['GET', 'POST'])
@@ -54,7 +53,7 @@ def contact():
     if form.errors != {}:
         for err_msg in form.errors.values():
             flash(f'There was an error with sending contact information: {err_msg}', category='danger')
-    return render_template("contact.html", form=form)
+    return render_template("contact.html", form=form, categories=Category.query.all())
 
 
 @app.route("/logout", methods=['GET'])
@@ -78,7 +77,7 @@ def login():
         else:
             flash('Username or password are incorrect! Please try again', category='danger')
             print("Incorrect username pass")
-    return render_template("login.html", form=form)
+    return render_template("login.html", form=form, categories=Category.query.all())
 
 
 @app.route("/items/<int:item_id>/favorite")
@@ -113,13 +112,17 @@ def remove_from_favorite(item_id):
 @login_required
 def favorite_list():
     user = User.query.get(current_user.id)
-    return render_template("favorites.html", products=user.favorites)
+    return render_template("favorites.html", products=user.favorites, categories=Category.query.all())
 
 
 @app.route("/items/<int:item_id>", methods=['GET', 'POST'])
 def item_detail(item_id):
     form = CommentForm()
     if form.validate_on_submit():
+
+        if not current_user.is_authenticated:
+            abort(401)
+
         Item.query.get_or_404(item_id)
         comment_to_create = Comment(comment=form.comment.data,
                                     item_id=item_id,
@@ -138,7 +141,8 @@ def item_detail(item_id):
                            suggestions=filter(lambda suggestion: suggestion.id != item.id,
                                               Category.query.get_or_404(item.category_id).items),
                            comment_form=form,
-                           comments=sorted(item.comments, key=lambda x: x.create_date, reverse=True)
+                           comments=sorted(item.comments, key=lambda x: x.create_date, reverse=True),
+                           categories=Category.query.all()
                            )
 
 @app.errorhandler(401)

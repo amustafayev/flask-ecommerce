@@ -20,7 +20,7 @@ class UserModelView(ModelView):
 
 class ItemAdmin(ModelView):
     form_columns = ['name', 'main_price', 'discount_price',
-                    'description', 'user_id', 'image_path', 'category_id']
+                    'description', 'user_id', 'image_path', 'category_id','comments']
 
     def is_accessible(self):
         return current_user.is_authenticated and current_user.username == app.config['ADMIN_USERNAME']  # Only username test can have administration priviliges
