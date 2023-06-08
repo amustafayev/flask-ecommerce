@@ -125,7 +125,7 @@
           >
             <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
               {% for category in categories %}
-                <a href="{{ url_for('home_page',category_id=category.id) }}" class="nav-item nav-link">{{ category.name }}</a>
+                <a href="{{ url_for('home_page',category_name=category.name) }}" class="nav-item nav-link">{{ category.name }}</a>
             {%  endfor %}
             </div>
           </nav>

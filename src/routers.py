@@ -6,11 +6,11 @@ from src.forms import RegisterForm, LoginForm, ContactForm, CommentForm
 from src.models import User, Item, Category, ContactDetails, Comment
 
 
-@app.route("/<int:category_id>")
+@app.route("/<string:category_name>")
 @app.route("/")
-def home_page(category_id=None):
-    if category_id is not None:
-        items = Category.query.get_or_404(category_id).items
+def home_page(category_name=None):
+    if category_name is not None:
+        items = Category.query.filter_by(name=category_name).first().items
     else:
         items = Item.query.all()
     return render_template("home.html", products=items, categories=Category.query.all())

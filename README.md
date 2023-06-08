@@ -33,3 +33,9 @@ Demo E-commerce App implemented in flask
     Application: http://127.0.0.1:8000
     
     Admin Panel: http://127.0.0.1:8000/admin
+
+### Note
+If flask db not working
+
+pip uninstall flask
+pip install flask

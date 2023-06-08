@@ -10,7 +10,8 @@ class UserModelView(ModelView):
     column_display_all_relations = True
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.username == app.config['ADMIN_USERNAME']  # Only username test can have administration priviliges
+        return current_user.is_authenticated and current_user.username == app.config[
+            'ADMIN_USERNAME']  # Only username test can have administration priviliges
 
     def inaccessible_callback(self, name, **kwargs):
         flash("Please Login with administrator user in order to continue", category="warning")
@@ -20,10 +21,11 @@ class UserModelView(ModelView):
 
 class ItemAdmin(ModelView):
     form_columns = ['name', 'main_price', 'discount_price',
-                    'description', 'user_id', 'image_path', 'category_id','comments']
+                    'description', 'user_id', 'image_path', 'category_id', 'comments']
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.username == app.config['ADMIN_USERNAME']  # Only username test can have administration priviliges
+        return current_user.is_authenticated and current_user.username == app.config[
+            'ADMIN_USERNAME']  # Only username test can have administration priviliges
 
     def inaccessible_callback(self, name, **kwargs):
         flash("Please Login with administrator user in order to continue", category="warning")
@@ -35,17 +37,20 @@ class CategoryAdmin(ModelView):
     form_columns = ['name', 'items']
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.username == app.config['ADMIN_USERNAME']  # Only username test can have administration priviliges
+        return current_user.is_authenticated and current_user.username == app.config[
+            'ADMIN_USERNAME']  # Only username test can have administration priviliges
 
     def inaccessible_callback(self, name, **kwargs):
         flash("Please Login with administrator user in order to continue", category="warning")
         # redirect to login page if user doesn't have access
         return redirect(url_for('login'))
 
+
 class CustomModelView(ModelView):
 
     def is_accessible(self):
-        return current_user.is_authenticated and current_user.username == app.config['ADMIN_USERNAME']  # Only username test can have administration priviliges
+        return current_user.is_authenticated and current_user.username == app.config[
+            'ADMIN_USERNAME']  # Only username test can have administration priviliges
 
     def inaccessible_callback(self, name, **kwargs):
         flash("Please Login with administrator user in order to continue", category="warning")

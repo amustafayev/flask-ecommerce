@@ -17,7 +17,7 @@ Home
         <div class="col-lg-3 col-md-12">
           <h5 class="font-weight-semi-bold mb-4">Filter by Category</h5>
             {% for category in categories %}
-                <a href="{{ url_for('home_page',category_id=category.id) }}" class="nav-item nav-link">{{ category.name }} {{ category.item_count }}</a>
+                <a href="{{ url_for('home_page',category_name=category.name) }}" class="nav-item nav-link">{{ category.name }} {{ category.item_count }}</a>
 
             {%  endfor %}
         </div>
